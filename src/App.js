@@ -1,28 +1,42 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useReducer } from 'react'
+import styled from '@emotion/styled'
+import { todosReducer } from './reducers'
+import InputField from './components/InputField'
+import TodoList from './components/TodoList';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+export const TodosDispatchContext = React.createContext(null);
+
+const TODOS = [
+  { todo: 'Learn React', isCompleted: true },
+  { todo: 'Learn hooks', isCompleted: false },
+  { todo: 'Do laundry', isCompleted: false },
+]
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #FFEBD3;
+  width: 100%;
+  min-height: 97.5vh;
+`
+
+function App() {
+  const [todos, dispatch] = useReducer(todosReducer, [])
+  
+  useEffect(() => {
+    dispatch({ type: 'ADD_TODOS', payload: TODOS })
+  }, [])
+
+  return (
+    <Container>
+      <TodosDispatchContext.Provider value={dispatch}>
+        <InputField />
+        <TodoList todos={todos} />
+      </TodosDispatchContext.Provider>
+    </Container>
+  )
 }
 
-export default App;
+export default App
